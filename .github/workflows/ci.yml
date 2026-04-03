@@ -1,28 +1,86 @@
-name: CI
+name: Backend CI
 
 on:
-    push:
-        branches:
-            - main
-    pull_request:
-        branches:
-            - main
+  push:
+    branches:
+      - main # Runs automatically every time you push to main
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  test:
+    name: Run Tests
+    runs-on: self-hosted # Uses your QUT EC2 instance as the runner
+    strategy:
+      matrix:
+        node-version: [22]
+    environment: MONGO_URI # GitHub environment where your secrets are stored
 
-        steps:
-        - name: Checkout code
-            uses: actions/checkout@v2
+    steps:
+      # Step 1: Pull your latest code onto the EC2 runner
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-        - name: Set up Node.js
-            uses: actions/setup-node@v2
-            with:
-                node-version: '14'
+      # Step 2: Install the correct version of Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-        - name: Install dependencies
-            run: npm install
+      # Step 3: Print secrets to confirm they are loaded (values are hidden by GitHub)
+      - name: Print Env Secrets
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PORT: ${{ secrets.PORT }}
+        run: |
+          echo "MONGO_URI is set: $MONGO_URI"
+          echo "JWT_SECRET is set: $JWT_SECRET"
+          echo "PORT is set: $PORT"
 
-        - name: Run tests
-            run: npm test
+      # Step 4: Stop any currently running app on EC2 so we can redeploy cleanly
+      - name: Stop running services
+        run: pm2 stop all
+
+      # Step 5: Install backend dependencies using yarn
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: |
+          npm install --global yarn
+          yarn --version
+          yarn install
+
+      # Step 6: Install frontend dependencies and build the React app
+      - name: Install Frontend Dependencies and Build
+        working-directory: ./frontend
+        run: |
+          df -h
+          sudo rm -rf ./build
+          yarn install
+          yarn run build
+
+      # Step 7: Run your itinerary test cases — pipeline fails here if any test fails
+      - name: Run Backend Tests
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PORT: ${{ secrets.PORT }}
+        working-directory: ./backend
+        run: npm test
+
+      # Step 8: Clean install of dependencies (ensures no leftover cache issues)
+      - name: Clean install
+        run: npm ci
+
+      # Step 9: Write production secrets into a .env file on the EC2 server
+      # PROD secret in GitHub should contain the full contents of your .env file
+      - name: Create .env file for production
+        run: |
+          cd ./backend
+          touch .env
+          echo "${{ secrets.PROD }}" > .env
+
+      # Step 10: Start and restart the app with pm2 so it stays running
+      - name: Start services
+        run: pm2 start all
+
+      - name: Restart services
+        run: pm2 restart all
