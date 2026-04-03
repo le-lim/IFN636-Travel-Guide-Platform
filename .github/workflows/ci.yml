@@ -3,16 +3,16 @@ name: Backend CI
 on:
   push:
     branches:
-      - main  # Runs automatically every time you push to main
+      - main # Runs automatically every time you push to main
 
 jobs:
   test:
     name: Run Tests
-    runs-on: self-hosted  # Uses your QUT EC2 instance as the runner
+    runs-on: self-hosted # Uses your QUT EC2 instance as the runner
     strategy:
       matrix:
         node-version: [22]
-    environment: MONGO_URI  # GitHub environment where your secrets are stored
+    environment: MONGO_URI # GitHub environment where your secrets are stored
 
     steps:
       # Step 1: Pull your latest code onto the EC2 runner
