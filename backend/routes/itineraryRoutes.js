@@ -16,4 +16,3 @@ router.put('/:id',    protect, updateItinerary);
 router.delete('/:id', protect, deleteItinerary);
 
 module.exports = router;
-
