@@ -24,21 +24,21 @@ const Itineraries = () => {
 
   // useEffect() runs code when the page first loads (or when something changes).
   // The [] at the end means "only run once when the page loads" — not repeatedly.
-  useEffect(() => {
-    fetchItineraries();
-  }, [user]);
 
   // Fetches all itineraries from your backend and stores them in state
-  const fetchItineraries = async () => {
-    try {
-      const response = await axiosInstance.get('/api/itineraries', {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      setItineraries(response.data); // update state → React re-renders the list
-    } catch (error) {
-      alert('Failed to fetch itineraries.');
-    }
-  };
+  useEffect(() => {
+    const fetchItineraries = async () => {
+      try {
+        const response = await axiosInstance.get('/api/itineraries', {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        setItineraries(response.data);
+      } catch (error) {
+        alert('Failed to fetch itineraries.');
+      }
+    };
+    fetchItineraries();
+  }, [user]);
 
   // Called when user clicks "Create New" button
   const handleCreateNew = () => {
