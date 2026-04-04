@@ -11,47 +11,38 @@ const {
 } = require('../controllers/itineraryController');
 const { expect } = chai;
 
-// ─── WHAT IS HAPPENING HERE? ───────────────────────────────────────────────────
-// We are testing each controller function WITHOUT connecting to MongoDB.
-// sinon.stub() replaces the real database call with a fake one we control.
-// This means tests run fast and never need the real database to be running.
-// Each test follows the same 4-step pattern:
-//   1. Set up a fake req (request) and res (response)
-//   2. Stub the database method to return fake data
-//   3. Call the controller function
-//   4. Assert (check) the response was correct, then restore the stub
-// ──────────────────────────────────────────────────────────────────────────────
 
-// ─── CREATE ITINERARY TESTS ───────────────────────────────────────────────────
+// CREATE ITINERARY TESTS
 describe('CreateItinerary Function Test', () => {
 
   it('should create a new itinerary successfully', async () => {
-    // Step 1: Fake incoming request — simulates a logged-in user submitting the form
+    // Fake incoming request
+
     const req = {
       user: { _id: new mongoose.Types.ObjectId() },
       body: { title: 'Paris Trip', startDate: '2025-06-01', endDate: '2025-06-07' },
     };
 
-    // The fake itinerary object we expect the database to return
     const createdItinerary = { _id: new mongoose.Types.ObjectId(), ...req.body, createdBy: req.user._id };
 
-    // Step 2: Stub Itinerary.create so it never touches the real database
+    // Stub Itinerary.create so it never touches the real database
     const createStub = sinon.stub(Itinerary, 'create').resolves(createdItinerary);
 
-    // Fake response object — sinon.spy() records what gets called on it
     const res = {
       status: sinon.stub().returnsThis(), // .returnsThis() allows chaining: res.status(201).json(...)
       json: sinon.spy(),
     };
 
-    // Step 3: Call the actual controller function
+
+    // Call actual controller function
     await createItinerary(req, res);
 
-    // Step 4: Assert the controller responded correctly
+    // Assert controller responded correctly
     expect(res.status.calledWith(201)).to.be.true;
     expect(res.json.calledWith(createdItinerary)).to.be.true;
 
-    createStub.restore(); // clean up — remove the stub so other tests aren't affected
+    createStub.restore();
+
   });
 
   it('should return 400 if creation fails', async () => {
@@ -60,7 +51,9 @@ describe('CreateItinerary Function Test', () => {
       body: { title: 'Paris Trip', startDate: '2025-06-01', endDate: '2025-06-07' },
     };
 
-    // Stub create to throw an error — simulates a database failure
+
+    // Stub create to throw an error
+
     const createStub = sinon.stub(Itinerary, 'create').throws(new Error('DB Error'));
 
     const res = {
@@ -77,7 +70,9 @@ describe('CreateItinerary Function Test', () => {
   });
 });
 
-// ─── GET ALL ITINERARIES TESTS ────────────────────────────────────────────────
+
+// GET ALL ITINERARIES TESTS
+
 describe('GetItineraries Function Test', () => {
 
   it('should return all itineraries for the user', async () => {
@@ -90,7 +85,10 @@ describe('GetItineraries Function Test', () => {
       { _id: new mongoose.Types.ObjectId(), title: 'Tokyo Trip', createdBy: req.user._id },
     ];
 
+
+
     // Itinerary.find().sort() is a chain — we stub find to return an object with a sort method
+
     const findStub = sinon.stub(Itinerary, 'find').returns({
       sort: sinon.stub().resolves(fakeList),
     });
@@ -131,7 +129,10 @@ describe('GetItineraries Function Test', () => {
   });
 });
 
-// ─── UPDATE ITINERARY TESTS ───────────────────────────────────────────────────
+
+// UPDATE ITINERARY TESTS
+
+
 describe('UpdateItinerary Function Test', () => {
 
   it('should update an itinerary successfully', async () => {
@@ -166,6 +167,7 @@ describe('UpdateItinerary Function Test', () => {
       body: { title: 'Does Not Exist' },
     };
 
+
     // Resolves with null — simulates the itinerary not belonging to this user
     const updateStub = sinon.stub(Itinerary, 'findOneAndUpdate').resolves(null);
 
@@ -183,7 +185,9 @@ describe('UpdateItinerary Function Test', () => {
   });
 });
 
-// ─── DELETE ITINERARY TESTS ───────────────────────────────────────────────────
+
+// DELETE ITINERARY TESTS 
+
 describe('DeleteItinerary Function Test', () => {
 
   it('should delete an itinerary successfully', async () => {
