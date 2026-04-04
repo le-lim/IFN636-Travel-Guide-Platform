@@ -85,17 +85,20 @@ const ItineraryForm = ({ itineraries, setItineraries, editingItinerary, onClose 
           bubbling up to the overlay and accidentally closing it. */}
       <div
         className="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl"
+        style={{ border: '1px solid #4E3776', boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Title changes depending on mode */}
-        <h2 className="text-xl font-bold text-gray-800 mb-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-6 "
+            style={{ color: '#4E3776'}}>
           {editingItinerary ? 'Edit Itinerary' : 'Create New Itinerary'}
         </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Title field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1"
+                    style={{ color: '#4E3776' }}>
               Itinerary Name
             </label>
             {/* value={title} ties the input to state.
@@ -107,12 +110,14 @@ const ItineraryForm = ({ itineraries, setItineraries, editingItinerary, onClose 
               placeholder="e.g. Europe Summer Trip"
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ backgroundColor: '#F2EFF8' }}
             />
           </div>
 
           {/* Start date field — type="date" gives the browser calendar picker */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1"
+                    style={{ color: '#4E3776' }}>
               Start Date
             </label>
             <input
@@ -121,12 +126,14 @@ const ItineraryForm = ({ itineraries, setItineraries, editingItinerary, onClose 
               onChange={(e) => setStartDate(e.target.value)}
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ backgroundColor: '#F2EFF8' }}
             />
           </div>
 
           {/* End date field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1"
+                    style={{ color: '#4E3776' }}>
               End Date
             </label>
             <input
@@ -135,23 +142,34 @@ const ItineraryForm = ({ itineraries, setItineraries, editingItinerary, onClose 
               onChange={(e) => setEndDate(e.target.value)}
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ backgroundColor: '#F2EFF8' }}
             />
           </div>
 
           {/* Button row */}
-          <div className="flex gap-3 mt-2">
+          <div className="flex gap-3 mt-2 font-itinerary ">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition text-sm"
+              className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition text-sm "
+              style={{
+                backgroundColor: '#B6A8D8',
+                color: '#F2EFF8',
+                letterSpacing: '0.05em',
+              }}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-medium"
+              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm font-medium font-itinerary"
+              style={{
+                backgroundColor: '#B6A8D8',
+                color: '#F2EFF8',
+                letterSpacing: '0.05em',
+              }}
             >
-              {editingItinerary ? 'Save Changes' : 'Create'}
+              {editingItinerary ? 'Save' : 'Create'}
             </button>
           </div>
         </form>
