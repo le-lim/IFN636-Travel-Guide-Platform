@@ -36,11 +36,11 @@ const ItineraryList = ({ itineraries, setItineraries, onEdit, onCreateNew }) => 
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">My Itineraries</h1>
+      <div className="flex justify-between items-center mb-6 ">
+        <h1 className="text-2xl font-bold text-[#4E3776] ">My Itineraries</h1>
         <button
           onClick={onCreateNew}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          className="bg-[#947DC4] text-white px-4 py-2 rounded hover:bg-[#3b2a59] transition-colors font-mono"
         >
           + Create New
         </button>
@@ -69,7 +69,7 @@ const ItineraryList = ({ itineraries, setItineraries, onEdit, onCreateNew }) => 
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-xl font-bold text-gray-800">
+                    <h2 className="text-xl font-bold text-[#4E3776]">
                       {itinerary.title}
                     </h2>
                     <div className="flex gap-4 mt-2 text-sm text-gray-500">
@@ -86,8 +86,8 @@ const ItineraryList = ({ itineraries, setItineraries, onEdit, onCreateNew }) => 
               {/* 3. The Expandable Detail Section */}
               {expandedId === itinerary._id && (
                 <div className="mt-4 pt-4 border-t border-gray-100 animate-fadeIn">
-                  <div className="bg-blue-50 rounded-lg p-4">
-                    <p className="text-blue-700 text-sm italic">
+                  <div className="bg-blue-50 rounded-lg p-4 bg-[#F2EFF8]">
+                    <p className="text-[#947DC4] text-sm font-semibold italic">
                       📍 No destinations have been added to this itinerary yet. 
                       Explore our travel guides to start planning your stops!
                     </p>
@@ -102,7 +102,7 @@ const ItineraryList = ({ itineraries, setItineraries, onEdit, onCreateNew }) => 
                     e.stopPropagation(); // Prevents the card from toggling when clicking Edit
                     onEdit(itinerary);
                   }}
-                  className="flex-1 text-sm bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition"
+                  className="flex-1 text-sm font-semibold bg-[#B6A8D8]/50 px-3 py-2 rounded-lg font-itinerary"
                 >
                   Edit Settings
                 </button>
@@ -111,7 +111,7 @@ const ItineraryList = ({ itineraries, setItineraries, onEdit, onCreateNew }) => 
                     e.stopPropagation(); // Prevents the card from toggling when clicking Delete
                     handleDelete(itinerary._id);
                   }}
-                  className="flex-1 text-sm bg-red-50 text-red-600 px-3 py-2 rounded-lg hover:bg-red-100 transition"
+                  className="flex-1 text-sm font-semibold bg-red-50 text-red-600 px-3 py-2 rounded-lg hover:bg-red-100 transition font-itinerary"
                 >
                   Delete
                 </button>
