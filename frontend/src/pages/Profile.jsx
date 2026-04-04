@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import axiosInstance from '../axiosConfig';
 
 const Profile = () => {
-  const { user } = useAuth(); // Access user token from context
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,7 +13,6 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch profile data from the backend
     const fetchProfile = async () => {
       setLoading(true);
       try {
@@ -32,7 +31,6 @@ const Profile = () => {
         setLoading(false);
       }
     };
-
     if (user) fetchProfile();
   }, [user]);
 
@@ -52,42 +50,47 @@ const Profile = () => {
   };
 
   if (loading) {
-    return <div className="text-center mt-20">Loading...</div>;
+    return <div className="text-center mt-10">Loading...</div>;
   }
 
   return (
-    <div className="max-w-md mx-auto mt-20">
-      <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded">
-        <h1 className="text-2xl font-bold mb-4 text-center text-[#4E3776]">Your Profile</h1>
+    <div className="max-w-md mx-auto mt-8 sm:mt-20 px-4 sm:px-0">
+      <form onSubmit={handleSubmit} className="bg-white p-5 sm:p-6 shadow-md rounded">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center text-[#4E3776]">
+          Your Profile
+        </h1>
         <input
           type="text"
           placeholder="Name"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
+          className="w-full mb-4 p-2 border rounded text-sm sm:text-base"
         />
         <input
           type="email"
           placeholder="Email"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
+          className="w-full mb-4 p-2 border rounded text-sm sm:text-base"
         />
         <input
           type="text"
           placeholder="University"
           value={formData.university}
           onChange={(e) => setFormData({ ...formData, university: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
+          className="w-full mb-4 p-2 border rounded text-sm sm:text-base"
         />
         <input
           type="text"
           placeholder="Address"
           value={formData.address}
           onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-          className="w-full mb-4 p-2 border rounded"
+          className="w-full mb-4 p-2 border rounded text-sm sm:text-base"
         />
-        <button type="submit" className="w-full bg-[#947DC4] text-white p-2 rounded hover:bg-[#3b2a59] transition-colors">
+        <button
+          type="submit"
+          className="w-full bg-[#947DC4] text-white p-2 rounded hover:bg-[#3b2a59] transition-colors text-sm sm:text-base"
+        >
           {loading ? 'Updating...' : 'Update Profile'}
         </button>
       </form>
