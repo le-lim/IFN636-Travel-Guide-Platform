@@ -17,18 +17,22 @@ describe('CreateItinerary Function Test', () => {
 
   it('should create a new itinerary successfully', async () => {
     // Fake incoming request
+
     const req = {
       user: { _id: new mongoose.Types.ObjectId() },
       body: { title: 'Paris Trip', startDate: '2025-06-01', endDate: '2025-06-07' },
     };
+
     const createdItinerary = { _id: new mongoose.Types.ObjectId(), ...req.body, createdBy: req.user._id };
 
     // Stub Itinerary.create so it never touches the real database
     const createStub = sinon.stub(Itinerary, 'create').resolves(createdItinerary);
+
     const res = {
       status: sinon.stub().returnsThis(), // .returnsThis() allows chaining: res.status(201).json(...)
       json: sinon.spy(),
     };
+
 
     // Call actual controller function
     await createItinerary(req, res);
@@ -38,6 +42,7 @@ describe('CreateItinerary Function Test', () => {
     expect(res.json.calledWith(createdItinerary)).to.be.true;
 
     createStub.restore();
+
   });
 
   it('should return 400 if creation fails', async () => {
@@ -46,7 +51,9 @@ describe('CreateItinerary Function Test', () => {
       body: { title: 'Paris Trip', startDate: '2025-06-01', endDate: '2025-06-07' },
     };
 
+
     // Stub create to throw an error
+
     const createStub = sinon.stub(Itinerary, 'create').throws(new Error('DB Error'));
 
     const res = {
@@ -63,7 +70,9 @@ describe('CreateItinerary Function Test', () => {
   });
 });
 
+
 // GET ALL ITINERARIES TESTS
+
 describe('GetItineraries Function Test', () => {
 
   it('should return all itineraries for the user', async () => {
@@ -75,6 +84,10 @@ describe('GetItineraries Function Test', () => {
       { _id: new mongoose.Types.ObjectId(), title: 'Paris Trip', createdBy: req.user._id },
       { _id: new mongoose.Types.ObjectId(), title: 'Tokyo Trip', createdBy: req.user._id },
     ];
+
+
+
+    // Itinerary.find().sort() is a chain — we stub find to return an object with a sort method
 
     const findStub = sinon.stub(Itinerary, 'find').returns({
       sort: sinon.stub().resolves(fakeList),
@@ -116,7 +129,10 @@ describe('GetItineraries Function Test', () => {
   });
 });
 
+
 // UPDATE ITINERARY TESTS
+
+
 describe('UpdateItinerary Function Test', () => {
 
   it('should update an itinerary successfully', async () => {
@@ -151,6 +167,8 @@ describe('UpdateItinerary Function Test', () => {
       body: { title: 'Does Not Exist' },
     };
 
+
+    // Resolves with null — simulates the itinerary not belonging to this user
     const updateStub = sinon.stub(Itinerary, 'findOneAndUpdate').resolves(null);
 
     const res = {
@@ -167,7 +185,9 @@ describe('UpdateItinerary Function Test', () => {
   });
 });
 
+
 // DELETE ITINERARY TESTS 
+
 describe('DeleteItinerary Function Test', () => {
 
   it('should delete an itinerary successfully', async () => {
